@@ -1,0 +1,59 @@
+name: ea-proyecto
+
+services:
+  mongodb:
+    image: mongo:8
+    container_name: ea-proyecto-mongodb
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - ea-net
+
+  api:
+    image: ghcr.io/erikm4/ea_proyecto_backend:latest
+    container_name: ea-proyecto-api
+    restart: unless-stopped
+    ports:
+      - "1337:1337"
+    environment:
+      MONGO_URL: "mongodb://mongodb:27017/${MONGO_DB:-ea_proyecto}"
+      CORS_ORIGIN: "${CORS_ORIGIN:-http://localhost:4300}"
+      SERVER_PORT: 1337
+      JWT_SECRET: "${JWT_SECRET:?falta JWT_SECRET en el fichero de entorno}"
+      JWT_REFRESH_SECRET: "${JWT_REFRESH_SECRET:?falta JWT_REFRESH_SECRET en el fichero de entorno}"
+      JWT_EXPIRES_IN: "${JWT_EXPIRES_IN:-15m}"
+      JWT_REFRESH_EXPIRES_IN: "${JWT_REFRESH_EXPIRES_IN:-7d}"
+    depends_on:
+      - mongodb
+    networks:
+      - ea-net
+
+  angular:
+    image: ghcr.io/guillermoaliaga/ea_proyecto_backoffice_frontend:latest
+    container_name: ea-proyecto-angular
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    depends_on:
+      - api
+    networks:
+      - ea-net
+
+  react:
+    image: ghcr.io/guillermoaliaga/ea_proyecto_react:latest
+    container_name: ea-proyecto-react
+    restart: unless-stopped
+    ports:
+      - "4300:80"
+    depends_on:
+      - api
+    networks:
+      - ea-net
+
+networks:
+  ea-net:
+    driver: bridge
+
+volumes:
+  mongo-data:
