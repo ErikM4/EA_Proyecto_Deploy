@@ -15,10 +15,10 @@ services:
     container_name: ea-proyecto-api
     restart: unless-stopped
     ports:
-      - "1337:1337"
+      - "3000:1337"
     environment:
       MONGO_URL: "mongodb://mongodb:27017/${MONGO_DB:-ea_proyecto}"
-      CORS_ORIGIN: "${CORS_ORIGIN:-http://localhost:4300}"
+      CORS_ORIGIN: "${CORS_ORIGIN:-https://ea2.upc.edu,https://ea2-back.upc.edu}"
       SERVER_PORT: 1337
       JWT_SECRET: "${JWT_SECRET:?falta JWT_SECRET en el fichero de entorno}"
       JWT_REFRESH_SECRET: "${JWT_REFRESH_SECRET:?falta JWT_REFRESH_SECRET en el fichero de entorno}"
@@ -34,7 +34,7 @@ services:
     container_name: ea-proyecto-angular
     restart: unless-stopped
     ports:
-      - "4200:80"
+      - "4000:80"
     depends_on:
       - api
     networks:
@@ -45,7 +45,7 @@ services:
     container_name: ea-proyecto-react
     restart: unless-stopped
     ports:
-      - "4300:80"
+      - "8080:80"
     depends_on:
       - api
     networks:
