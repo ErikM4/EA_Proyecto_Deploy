@@ -26,14 +26,13 @@ El ecosistema levanta 4 contenedores conectados a través de la red interna `ea-
 ## 1. Despliegue Inicial
 
 1. **Conéctate al servidor por SSH y clona el repositorio:**
-   ```bash
+
    ssh usuario@10.4.120.117
    git clone https://github.com/ErikM4/EA_Proyecto_Deploy.git
    cd EA_Proyecto_Deploy
 
-2. **Crea el archivo de variables de entorno .env a partir de env.example (este archivo está ignorado en .gitignore y nunca debe subirse a GitHub):**
+2. **Crea el archivo de variables de entorno .env a partir de env.example:**
 
-  ```bash
   cp env.example .env
   nano .env
 
@@ -48,13 +47,11 @@ JWT_REFRESH_EXPIRES_IN=7d
 
 4. **Descarga las imágenes desde GitHub Container Registry y levanta los servicios:**
 
-  ```bash
   docker compose pull
   docker compose up -d
 
 5. **Inicialización de la Base de Datos (Seed)**
 
-  ```bash
   docker run --rm --network ea-proyecto_ea-net \
   --env-file .env \
   -e MONGO_URL=mongodb://mongodb:27017/ea_proyecto \
